@@ -823,6 +823,33 @@
       transform: translateY(1px);
     }
 
+
+    .selected-plan-card {
+      border: 1px solid rgba(34,197,94,.45);
+      background:
+        linear-gradient(135deg, rgba(34,197,94,.14), rgba(56,189,248,.10)),
+        rgba(17,24,39,.92);
+    }
+
+    .selected-plan-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-bottom: .8rem;
+    }
+
+    .selected-plan-header h2 {
+      margin: 0 0 .2rem;
+    }
+
+    .selected-plan-actions {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     @media (max-width: 760px) {
       .summary-grid, .grid-2, .grid-3, .quick-actions, .workout-day-tabs {
         grid-template-columns: 1fr 1fr;
@@ -1010,6 +1037,8 @@
     </section>
 
     <section id="panel-plan" class="panel">
+      <div id="selectedWorkoutPlan"></div>
+
       <div class="card">
         <div class="section-title">
           <h2>Workout Plan</h2>
@@ -1026,7 +1055,7 @@
           <button class="btn secondary" id="prevMonth" type="button">‹</button>
           <div>
             <div class="calendar-title" id="calendarTitle">Month</div>
-            <div class="muted" style="text-align:center;font-size:.8rem;">Scheduled workout days now show a Plan tab inside the date box</div>
+            <div class="muted" style="text-align:center;font-size:.8rem;">Tap Plan inside a workout date to open that full workout plan</div>
           </div>
           <button class="btn secondary" id="nextMonth" type="button">›</button>
         </div>
@@ -1236,6 +1265,7 @@
     let state = loadState();
     let viewMonth = new Date();
     let selectedDate = todayISO();
+    let activePlanWorkoutId = null;
 
     function todayISO() {
       const d = new Date();
@@ -1412,6 +1442,7 @@
       });
 
       if (name === "calendar") renderCalendar();
+      if (name === "plan") renderSelectedWorkoutPlan();
       if (name === "progress") renderProgress();
       if (name === "log") renderLogForm();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1422,6 +1453,7 @@
       renderTodayCard();
       renderWeekSchedule();
       renderPlan();
+      renderSelectedWorkoutPlan();
       renderCalendar();
       renderLogOptions();
       renderLogForm();
@@ -1559,15 +1591,101 @@
 
 
     function openWorkoutPlan(workoutId) {
+      activePlanWorkoutId = workoutId;
+      renderSelectedWorkoutPlan();
       showTab("plan");
+
       setTimeout(() => {
         document.querySelectorAll(".workout-card").forEach(card => card.classList.remove("plan-highlight"));
         const card = document.getElementById(`plan-card-${workoutId}`);
         if (card) {
           card.classList.add("plan-highlight");
-          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        const selectedCard = document.getElementById("selectedWorkoutPlan");
+        if (selectedCard) {
+          selectedCard.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 80);
+    }
+
+
+    function renderSelectedWorkoutPlan() {
+      const wrap = document.getElementById("selectedWorkoutPlan");
+      if (!wrap) return;
+
+      if (!activePlanWorkoutId || !defaultProgram[activePlanWorkoutId]) {
+        wrap.innerHTML = "";
+        return;
+      }
+
+      const workout = defaultProgram[activePlanWorkoutId];
+      const dayIndex = workout.id === "A" ? state.settings.dayA : workout.id === "B" ? state.settings.dayB : state.settings.dayC;
+      const dayName = dayNames[Number(dayIndex)];
+
+      wrap.innerHTML = `
+        <div class="card selected-plan-card">
+          <div class="selected-plan-header">
+            <div>
+              <h2>${workout.title}: ${workout.subtitle}</h2>
+              <p class="muted">Scheduled for ${dayName} • ${workout.minutes} minutes max</p>
+            </div>
+            <div class="selected-plan-actions">
+              <span class="pill good">Selected Plan</span>
+              <button class="btn secondary" id="clearSelectedPlanBtn" type="button">Show All</button>
+            </div>
+          </div>
+
+          <div class="advice">
+            <strong>Warm-up:</strong> ${workout.warmup.join(" • ")}
+          </div>
+
+          <div class="exercise-list">
+            ${workout.exercises.map(ex => `
+              <div class="exercise">
+                <div>
+                  <strong>${ex.name}</strong>
+                  <small>${ex.sets} sets x ${ex.reps}${ex.id === "farmer_carry" ? " seconds" : " reps"} • ${ex.note}</small>
+                </div>
+                <span class="pill">${ex.type}</span>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="advice">
+            <strong>Cardio:</strong> ${workout.cardio.minutes} minutes — ${workout.cardio.mode}. ${workout.cardio.note}
+          </div>
+
+          <p class="muted"><strong>Stretch:</strong> ${workout.stretch.join(" • ")}</p>
+
+          <div class="btn-row">
+            <button class="btn" id="logSelectedPlanWorkoutBtn" type="button">Log This Workout</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("clearSelectedPlanBtn").addEventListener("click", () => {
+        activePlanWorkoutId = null;
+        renderSelectedWorkoutPlan();
+        document.querySelectorAll(".workout-card").forEach(card => card.classList.remove("plan-highlight"));
+      });
+
+      document.getElementById("logSelectedPlanWorkoutBtn").addEventListener("click", () => {
+        const next = getNextPlannedDate();
+        const dateForWorkout = getUpcomingDateForWorkout(activePlanWorkoutId) || (next ? next.iso : todayISO());
+        document.getElementById("logDate").value = dateForWorkout;
+        document.getElementById("logWorkoutType").value = activePlanWorkoutId;
+        showTab("log");
+      });
+    }
+
+    function getUpcomingDateForWorkout(workoutId) {
+      const today = parseISO(todayISO());
+      for (let i = 0; i < 14; i++) {
+        const d = addDays(today, i);
+        const iso = dateToISO(d);
+        if (getPlannedWorkoutForDate(iso) === workoutId) return iso;
+      }
+      return null;
     }
 
     function renderCalendarWorkoutTabs() {
