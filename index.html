@@ -1070,12 +1070,12 @@
     <section id="panel-calendar" class="panel">
       <div class="card">
         <div class="calendar-head">
-          <button class="btn secondary" id="prevMonth" type="button" aria-label="Previous month">‹ Previous</button>
+          <button class="btn secondary" id="prevMonth" type="button" aria-label="Previous month" onclick="changeCalendarMonth(-1)">‹ Previous</button>
           <div>
             <div class="calendar-title" id="calendarTitle">Month</div>
             <div class="muted" style="text-align:center;font-size:.8rem;">Tap Plan inside a workout date to open that full workout plan</div>
           </div>
-          <button class="btn secondary" id="nextMonth" type="button" aria-label="Next month">Next ›</button>
+          <button class="btn secondary" id="nextMonth" type="button" aria-label="Next month" onclick="changeCalendarMonth(1)">Next ›</button>
         </div>
         <div class="calendar-jump">
           <div>
@@ -1802,9 +1802,13 @@
     }
 
     function changeCalendarMonth(delta) {
-      viewMonth = clampViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + delta, 1));
+      const currentYear = Number(viewMonth.getFullYear());
+      const currentMonth = Number(viewMonth.getMonth());
+      viewMonth = clampViewMonth(new Date(currentYear, currentMonth + Number(delta), 1));
       renderCalendar();
     }
+
+    window.changeCalendarMonth = changeCalendarMonth;
 
     function populateCalendarMonthSelect() {
       const select = document.getElementById("calendarMonthSelect");
@@ -2305,33 +2309,34 @@
         showTab("calendar");
       });
 
-      document.getElementById("startNextBtn").addEventListener("click", () => {
-        const next = getNextPlannedDate();
-        document.getElementById("logDate").value = next ? next.iso : todayISO();
-        document.getElementById("logWorkoutType").value = next ? next.workoutId : "A";
-        showTab("log");
-      });
+      const startNextBtn = document.getElementById("startNextBtn");
+      if (startNextBtn) {
+        startNextBtn.addEventListener("click", () => {
+          const next = getNextPlannedDate();
+          document.getElementById("logDate").value = next ? next.iso : todayISO();
+          document.getElementById("logWorkoutType").value = next ? next.workoutId : "A";
+          showTab("log");
+        });
+      }
 
-      document.getElementById("prevMonth").addEventListener("click", () => {
-        changeCalendarMonth(-1);
-      });
+      const calendarMonthSelect = document.getElementById("calendarMonthSelect");
+      if (calendarMonthSelect) {
+        calendarMonthSelect.addEventListener("change", (event) => {
+          const [year, month] = event.target.value.split("-").map(Number);
+          viewMonth = clampViewMonth(new Date(year, month - 1, 1));
+          renderCalendar();
+        });
+      }
 
-      document.getElementById("nextMonth").addEventListener("click", () => {
-        changeCalendarMonth(1);
-      });
-
-      document.getElementById("calendarMonthSelect").addEventListener("change", (event) => {
-        const [year, month] = event.target.value.split("-").map(Number);
-        viewMonth = clampViewMonth(new Date(year, month - 1, 1));
-        renderCalendar();
-      });
-
-      document.getElementById("calendarTodayBtn").addEventListener("click", () => {
-        selectedDate = todayISO();
-        const today = parseISO(todayISO());
-        viewMonth = clampViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
-        renderCalendar();
-      });
+      const calendarTodayBtn = document.getElementById("calendarTodayBtn");
+      if (calendarTodayBtn) {
+        calendarTodayBtn.addEventListener("click", () => {
+          selectedDate = todayISO();
+          const today = parseISO(todayISO());
+          viewMonth = clampViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+          renderCalendar();
+        });
+      }
 
       document.getElementById("logDate").addEventListener("change", () => {
         const date = document.getElementById("logDate").value;
