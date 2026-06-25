@@ -850,8 +850,26 @@
       justify-content: flex-end;
     }
 
+
+    .calendar-jump {
+      margin: .75rem 0 .85rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .55rem;
+      align-items: end;
+    }
+
+    .calendar-jump label {
+      margin-top: 0;
+    }
+
+    .month-nav-disabled {
+      opacity: .45;
+      pointer-events: none;
+    }
+
     @media (max-width: 760px) {
-      .summary-grid, .grid-2, .grid-3, .quick-actions, .workout-day-tabs {
+      .summary-grid, .grid-2, .grid-3, .quick-actions, .workout-day-tabs, .calendar-jump {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -1052,12 +1070,19 @@
     <section id="panel-calendar" class="panel">
       <div class="card">
         <div class="calendar-head">
-          <button class="btn secondary" id="prevMonth" type="button">‹</button>
+          <button class="btn secondary" id="prevMonth" type="button" aria-label="Previous month">‹ Previous</button>
           <div>
             <div class="calendar-title" id="calendarTitle">Month</div>
             <div class="muted" style="text-align:center;font-size:.8rem;">Tap Plan inside a workout date to open that full workout plan</div>
           </div>
-          <button class="btn secondary" id="nextMonth" type="button">›</button>
+          <button class="btn secondary" id="nextMonth" type="button" aria-label="Next month">Next ›</button>
+        </div>
+        <div class="calendar-jump">
+          <div>
+            <label for="calendarMonthSelect">Jump to Month</label>
+            <select id="calendarMonthSelect"></select>
+          </div>
+          <button class="btn secondary" id="calendarTodayBtn" type="button">Today</button>
         </div>
         <div id="calendarWorkoutTabs"></div>
         <div class="calendar-grid" id="calendarGrid"></div>
@@ -1264,8 +1289,12 @@
 
     let state = loadState();
     let viewMonth = new Date();
+    viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
     let selectedDate = todayISO();
     let activePlanWorkoutId = null;
+
+    const CALENDAR_MIN_MONTH = new Date(2026, 0, 1);
+    const CALENDAR_MAX_MONTH = new Date(2030, 11, 1);
 
     function todayISO() {
       const d = new Date();
@@ -1760,8 +1789,63 @@
       });
     }
 
+
+    function monthKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function clampViewMonth(date) {
+      const normalized = new Date(date.getFullYear(), date.getMonth(), 1);
+      if (normalized < CALENDAR_MIN_MONTH) return new Date(CALENDAR_MIN_MONTH);
+      if (normalized > CALENDAR_MAX_MONTH) return new Date(CALENDAR_MAX_MONTH);
+      return normalized;
+    }
+
+    function changeCalendarMonth(delta) {
+      viewMonth = clampViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + delta, 1));
+      renderCalendar();
+    }
+
+    function populateCalendarMonthSelect() {
+      const select = document.getElementById("calendarMonthSelect");
+      if (!select) return;
+
+      if (!select.children.length) {
+        const options = [];
+        let d = new Date(CALENDAR_MIN_MONTH);
+        while (d <= CALENDAR_MAX_MONTH) {
+          const value = monthKey(d);
+          const label = d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+          options.push(`<option value="${value}">${label}</option>`);
+          d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+        }
+        select.innerHTML = options.join("");
+      }
+
+      select.value = monthKey(viewMonth);
+    }
+
+    function updateCalendarNavButtons() {
+      const prev = document.getElementById("prevMonth");
+      const next = document.getElementById("nextMonth");
+      if (!prev || !next) return;
+
+      const current = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+      const atMin = current <= CALENDAR_MIN_MONTH;
+      const atMax = current >= CALENDAR_MAX_MONTH;
+
+      prev.disabled = atMin;
+      next.disabled = atMax;
+      prev.classList.toggle("month-nav-disabled", atMin);
+      next.classList.toggle("month-nav-disabled", atMax);
+    }
+
     function renderCalendar() {
+      viewMonth = clampViewMonth(viewMonth);
       renderCalendarWorkoutTabs();
+      populateCalendarMonthSelect();
+      updateCalendarNavButtons();
+
       const grid = document.getElementById("calendarGrid");
       const title = document.getElementById("calendarTitle");
       grid.innerHTML = "";
@@ -2213,7 +2297,8 @@
 
       document.getElementById("quickTodayBtn").addEventListener("click", () => {
         selectedDate = todayISO();
-        viewMonth = new Date();
+        const today = parseISO(todayISO());
+        viewMonth = clampViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
         document.getElementById("logDate").value = todayISO();
         const planned = getPlannedWorkoutForDate(todayISO());
         if (planned) document.getElementById("logWorkoutType").value = planned;
@@ -2228,12 +2313,23 @@
       });
 
       document.getElementById("prevMonth").addEventListener("click", () => {
-        viewMonth.setMonth(viewMonth.getMonth() - 1);
-        renderCalendar();
+        changeCalendarMonth(-1);
       });
 
       document.getElementById("nextMonth").addEventListener("click", () => {
-        viewMonth.setMonth(viewMonth.getMonth() + 1);
+        changeCalendarMonth(1);
+      });
+
+      document.getElementById("calendarMonthSelect").addEventListener("change", (event) => {
+        const [year, month] = event.target.value.split("-").map(Number);
+        viewMonth = clampViewMonth(new Date(year, month - 1, 1));
+        renderCalendar();
+      });
+
+      document.getElementById("calendarTodayBtn").addEventListener("click", () => {
+        selectedDate = todayISO();
+        const today = parseISO(todayISO());
+        viewMonth = clampViewMonth(new Date(today.getFullYear(), today.getMonth(), 1));
         renderCalendar();
       });
 
