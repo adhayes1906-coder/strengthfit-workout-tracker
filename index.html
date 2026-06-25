@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#111827" />
-  <title>StrengthFit 56 Workout Tracker</title>
+  <title>StrengthFit Tracker | Workout App</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -589,9 +589,247 @@
       margin-top: .15rem;
     }
 
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap: .7rem;
+      margin-top: 1rem;
+    }
+
+    .big-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(34,197,94,.28);
+      background: linear-gradient(135deg, rgba(34,197,94,.95), rgba(134,239,172,.95));
+      color: #052e16;
+      box-shadow: 0 18px 35px rgba(34,197,94,.20);
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .big-action span:first-child {
+      display: block;
+      font-size: 1.02rem;
+    }
+
+    .big-action small {
+      display: block;
+      margin-top: .18rem;
+      opacity: .78;
+      font-weight: 800;
+    }
+
+    .quick-card {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,.72);
+      padding: 1rem;
+      color: var(--text);
+      font-weight: 850;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .quick-card small {
+      display: block;
+      color: var(--muted2);
+      margin-top: .18rem;
+      font-weight: 650;
+      line-height: 1.25;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .7rem;
+      margin-bottom: .75rem;
+    }
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+    .today-card {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: .85rem;
+      align-items: center;
+      background:
+        linear-gradient(135deg, rgba(56,189,248,.16), rgba(34,197,94,.12)),
+        rgba(31,41,55,.66);
+      border: 1px solid rgba(56,189,248,.23);
+      border-radius: 18px;
+      padding: .95rem;
+      margin: .85rem 0;
+    }
+
+    .today-card h3 {
+      margin: 0 0 .25rem;
+      font-size: 1.08rem;
+    }
+
+    .today-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: .65rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      overflow: hidden;
+      margin-top: .6rem;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%;
+      transition: width .25s ease;
+    }
+
+    .steps {
+      display: grid;
+      gap: .55rem;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 2.15rem minmax(0,1fr);
+      gap: .7rem;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(15,23,42,.50);
+      padding: .75rem;
+    }
+
+    .step-num {
+      width: 2.15rem;
+      height: 2.15rem;
+      border-radius: .8rem;
+      display: grid;
+      place-items: center;
+      background: rgba(34,197,94,.16);
+      color: #bbf7d0;
+      border: 1px solid rgba(34,197,94,.30);
+      font-weight: 950;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: .12rem;
+    }
+
+    .step small {
+      color: var(--muted2);
+      line-height: 1.35;
+    }
+
+    .tab .ico {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: .12rem;
+      line-height: 1;
+    }
+
+    .card {
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .workout-card:hover, .quick-card:hover, .exercise:hover, .day:hover {
+      border-color: rgba(56,189,248,.35);
+      background-color: rgba(31,41,55,.82);
+    }
+
+    .btn, .tab, .quick-card, .big-action, .day {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    .workout-day-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .55rem;
+      margin: .75rem 0 .9rem;
+    }
+
+    .workout-day-tab {
+      border: 1px solid var(--line);
+      background: rgba(31,41,55,.72);
+      color: var(--text);
+      border-radius: 15px;
+      padding: .75rem;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 850;
+      transition: border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+
+    .workout-day-tab:hover {
+      border-color: rgba(56,189,248,.45);
+      background: rgba(31,41,55,.92);
+    }
+
+    .workout-day-tab small {
+      display: block;
+      color: var(--muted2);
+      margin-top: .18rem;
+      font-weight: 650;
+      line-height: 1.25;
+    }
+
+    .workout-day-tab .tab-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .4rem;
+    }
+
+    .plan-highlight {
+      border-color: rgba(34,197,94,.65) !important;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.14), var(--shadow);
+    }
+
+
+    .day-plan-tab {
+      display: block;
+      width: 100%;
+      border-radius: 999px;
+      padding: .18rem .28rem;
+      font-size: .60rem;
+      line-height: 1.05;
+      font-weight: 950;
+      text-align: center;
+      margin-top: .22rem;
+      background: linear-gradient(135deg, rgba(34,197,94,.95), rgba(134,239,172,.95));
+      color: #052e16;
+      border: 1px solid rgba(34,197,94,.35);
+      cursor: pointer;
+    }
+
+    .day-plan-tab:active {
+      transform: translateY(1px);
+    }
+
     @media (max-width: 760px) {
-      .summary-grid, .grid-2, .grid-3 {
+      .summary-grid, .grid-2, .grid-3, .quick-actions, .workout-day-tabs {
         grid-template-columns: 1fr 1fr;
+      }
+
+      .big-action {
+        grid-column: 1 / -1;
       }
 
       .calendar-grid {
@@ -617,6 +855,10 @@
 
       .tabs {
         grid-template-columns: repeat(5, 1fr);
+      }
+
+      .today-card {
+        grid-template-columns: 1fr;
       }
 
       .tab {
@@ -664,10 +906,10 @@
   <header>
     <div class="topbar">
       <div class="brand">
-        <div class="logo">56</div>
+        <div class="logo">SF</div>
         <div>
-          <h1>StrengthFit Workout Tracker</h1>
-          <p class="subtitle">3-day strength, flexibility, cardio and back-friendly tracking</p>
+          <h1>StrengthFit Tracker</h1>
+          <p class="subtitle">Back-friendly strength, cardio and progress tracker</p>
         </div>
       </div>
       <button class="btn secondary" id="quickTodayBtn" type="button">Today</button>
@@ -676,8 +918,16 @@
 
   <main>
     <section class="hero">
-      <h2 id="heroTitle">Your 45-Minute Workout App</h2>
-      <p>This app tracks your workout schedule, activity checkoffs, weights lifted, cardio, flexibility work and when to increase weight. Your data saves privately in this browser using local storage.</p>
+      <h2 id="heroTitle">Your 45-Minute Fitness App</h2>
+      <p>Open the app, tap today’s workout, check off each activity, log your weights, and see what to increase next time. Your data saves privately in this browser.</p>
+      <div class="quick-actions">
+        <button class="big-action" id="heroStartBtn" type="button">
+          <span>Start Today / Next Workout<small>One tap to log the right workout</small></span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <button class="quick-card" data-tab="calendar" type="button">Calendar<small>See planned and completed days</small></button>
+        <button class="quick-card" data-tab="progress" type="button">Progress<small>View next weight suggestions</small></button>
+      </div>
       <div class="summary-grid" id="summaryGrid">
         <div class="mini">
           <div class="label">This Week</div>
@@ -700,14 +950,26 @@
 
     <section id="panel-dashboard" class="panel active">
       <div class="card">
-        <h2>Dashboard</h2>
+        <div class="section-title">
+          <h2>Today at a Glance</h2>
+          <span class="pill good">45 min max</span>
+        </div>
+        <div id="todayWorkoutCard"></div>
         <div class="advice">
           Goal: build strength safely, improve flexibility, add low-impact cardio and reduce stomach fat through consistent training, walking and nutrition.
         </div>
-        <div class="grid-3">
-          <button class="btn" id="startNextBtn" type="button">Start Next Workout</button>
-          <button class="btn secondary" data-tab="calendar" type="button">Open Calendar</button>
-          <button class="btn secondary" data-tab="progress" type="button">View Progress</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <h2>How to Use This App</h2>
+          <span class="pill blue">Simple flow</span>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div><strong>Start a workout</strong><small>Tap Start Today / Next Workout from the home screen.</small></div></div>
+          <div class="step"><div class="step-num">2</div><div><strong>Check off activities</strong><small>Mark warm-up, each exercise, cardio and stretching as completed.</small></div></div>
+          <div class="step"><div class="step-num">3</div><div><strong>Log weight and effort</strong><small>Enter the weight, reps, effort and back-pain score.</small></div></div>
+          <div class="step"><div class="step-num">4</div><div><strong>Follow next-weight guidance</strong><small>Use the Progress tab to see when to repeat or increase.</small></div></div>
         </div>
       </div>
 
@@ -749,8 +1011,11 @@
 
     <section id="panel-plan" class="panel">
       <div class="card">
-        <h2>Workout Plan</h2>
-        <p class="muted">Each workout is designed to stay under 45 minutes: 5-minute warm-up, 25-minute strength, 5-minute core, 8–10-minute cardio and short stretching.</p>
+        <div class="section-title">
+          <h2>Workout Plan</h2>
+          <span class="pill blue">3 days / week</span>
+        </div>
+        <p class="muted">Each workout is designed to stay under 45 minutes: warm-up, strength, core, cardio and stretching.</p>
         <div id="planList"></div>
       </div>
     </section>
@@ -759,9 +1024,13 @@
       <div class="card">
         <div class="calendar-head">
           <button class="btn secondary" id="prevMonth" type="button">‹</button>
-          <div class="calendar-title" id="calendarTitle">Month</div>
+          <div>
+            <div class="calendar-title" id="calendarTitle">Month</div>
+            <div class="muted" style="text-align:center;font-size:.8rem;">Scheduled workout days now show a Plan tab inside the date box</div>
+          </div>
           <button class="btn secondary" id="nextMonth" type="button">›</button>
         </div>
+        <div id="calendarWorkoutTabs"></div>
         <div class="calendar-grid" id="calendarGrid"></div>
         <div class="selected-date-box" id="selectedDateBox"></div>
       </div>
@@ -769,7 +1038,10 @@
 
     <section id="panel-log" class="panel">
       <div class="card">
-        <h2>Log Workout</h2>
+        <div class="section-title">
+          <h2>Log Workout</h2>
+          <span class="pill good">Check off + track weight</span>
+        </div>
         <div class="grid-2">
           <div>
             <label for="logDate">Date</label>
@@ -878,17 +1150,17 @@
   </main>
 
   <nav class="tabs" aria-label="App tabs">
-    <button class="tab active" data-tab="dashboard" type="button">Home</button>
-    <button class="tab" data-tab="plan" type="button">Plan</button>
-    <button class="tab" data-tab="calendar" type="button">Calendar</button>
-    <button class="tab" data-tab="log" type="button">Log</button>
-    <button class="tab" data-tab="progress" type="button">Progress</button>
+    <button class="tab active" data-tab="dashboard" type="button"><span class="ico">🏠</span>Home</button>
+    <button class="tab" data-tab="plan" type="button"><span class="ico">📋</span>Plan</button>
+    <button class="tab" data-tab="calendar" type="button"><span class="ico">📅</span>Calendar</button>
+    <button class="tab" data-tab="log" type="button"><span class="ico">✅</span>Log</button>
+    <button class="tab" data-tab="progress" type="button"><span class="ico">📈</span>Progress</button>
   </nav>
 
   <script>
     "use strict";
 
-    const APP_KEY = "strengthfit56.v1";
+    const APP_KEY = "strengthfit.v1";
     const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const shortDayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
@@ -1147,6 +1419,7 @@
 
     function renderAll() {
       renderSummary();
+      renderTodayCard();
       renderWeekSchedule();
       renderPlan();
       renderCalendar();
@@ -1154,6 +1427,57 @@
       renderLogForm();
       renderProgress();
       renderSettings();
+    }
+
+
+    function renderTodayCard() {
+      const wrap = document.getElementById("todayWorkoutCard");
+      if (!wrap) return;
+
+      const today = todayISO();
+      const plannedToday = getPlannedWorkoutForDate(today);
+      const next = getNextPlannedDate(today);
+      const wid = plannedToday || (next && next.workoutId);
+      const iso = plannedToday ? today : (next ? next.iso : today);
+      const workout = wid ? defaultProgram[wid] : null;
+
+      if (!workout) {
+        wrap.innerHTML = `
+          <div class="today-card">
+            <div>
+              <h3>No workout scheduled today</h3>
+              <p>Use the Calendar or Settings tab to choose your next workout day.</p>
+              <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn secondary" data-tab="calendar" type="button">Open Calendar</button>
+          </div>
+        `;
+        wrap.querySelector("[data-tab]")?.addEventListener("click", e => showTab(e.currentTarget.getAttribute("data-tab")));
+        return;
+      }
+
+      const log = state.logs[iso];
+      const activityLine = log ? getActivityCompletion(log, workout) : { completed: 0, total: getWorkoutActivities(workout).length };
+      const pct = activityLine.total ? Math.round((activityLine.completed / activityLine.total) * 100) : 0;
+      const dateLabel = iso === today ? "Today" : formatDate(iso, { weekday: "short", month: "short", day: "numeric" });
+      const actionLabel = log ? "Continue / Edit Log" : "Start Workout";
+
+      wrap.innerHTML = `
+        <div class="today-card">
+          <div>
+            <h3>${dateLabel}: ${workout.title}</h3>
+            <p>${workout.subtitle} • ${workout.cardio.minutes} min cardio • ${activityLine.completed}/${activityLine.total} activities done</p>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          </div>
+          <button class="btn" id="todayStartBtn" type="button">${actionLabel}</button>
+        </div>
+      `;
+
+      document.getElementById("todayStartBtn").addEventListener("click", () => {
+        document.getElementById("logDate").value = iso;
+        document.getElementById("logWorkoutType").value = wid;
+        showTab("log");
+      });
     }
 
     function renderSummary() {
@@ -1212,20 +1536,74 @@
             <strong>${formatDate(iso)} — ${workout.title}</strong>
             <small>${workout.subtitle} • ${workout.minutes} minutes • Cardio target ${workout.cardio.minutes} min</small>
           </div>
-          <button class="btn secondary" type="button" data-logdate="${iso}">${status}</button>
+          <div class="btn-row">
+            <button class="btn secondary" type="button" data-logdate="${iso}">${status}</button>
+            <button class="btn secondary" type="button" data-planworkout="${wid}">Plan</button>
+          </div>
         `;
-        div.querySelector("button").classList.add(statusClass === "good" ? "pill-good" : "");
-        div.querySelector("button").addEventListener("click", () => {
+        const logButton = div.querySelector("[data-logdate]");
+        logButton.classList.add(statusClass === "good" ? "pill-good" : "");
+        logButton.addEventListener("click", () => {
           document.getElementById("logDate").value = iso;
           document.getElementById("logWorkoutType").value = wid;
           showTab("log");
         });
+        div.querySelector("[data-planworkout]").addEventListener("click", () => openWorkoutPlan(wid));
         wrap.appendChild(div);
       });
 
       if (!wrap.children.length) {
         wrap.innerHTML = `<div class="empty">No workouts are scheduled this week. Check your schedule settings.</div>`;
       }
+    }
+
+
+    function openWorkoutPlan(workoutId) {
+      showTab("plan");
+      setTimeout(() => {
+        document.querySelectorAll(".workout-card").forEach(card => card.classList.remove("plan-highlight"));
+        const card = document.getElementById(`plan-card-${workoutId}`);
+        if (card) {
+          card.classList.add("plan-highlight");
+          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 80);
+    }
+
+    function renderCalendarWorkoutTabs() {
+      const wrap = document.getElementById("calendarWorkoutTabs");
+      if (!wrap) return;
+
+      const items = [
+        { id: "A", day: Number(state.settings.dayA) },
+        { id: "B", day: Number(state.settings.dayB) },
+        { id: "C", day: Number(state.settings.dayC) }
+      ];
+
+      wrap.innerHTML = `
+        <div class="section-title">
+          <h2 style="font-size:1rem;">Workout Day Tabs</h2>
+          <span class="pill blue">Tap to view plan</span>
+        </div>
+        <div class="workout-day-tabs">
+          ${items.map(item => {
+            const workout = defaultProgram[item.id];
+            return `
+              <button class="workout-day-tab" type="button" data-plan-workout="${item.id}">
+                <span class="tab-top">
+                  <span>${workout.title}</span>
+                  <span class="pill good">${dayNames[item.day]}</span>
+                </span>
+                <small>${workout.subtitle}</small>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      wrap.querySelectorAll("[data-plan-workout]").forEach(btn => {
+        btn.addEventListener("click", () => openWorkoutPlan(btn.getAttribute("data-plan-workout")));
+      });
     }
 
     function renderPlan() {
@@ -1235,6 +1613,7 @@
       Object.values(defaultProgram).forEach(workout => {
         const card = document.createElement("div");
         card.className = "workout-card";
+        card.id = `plan-card-${workout.id}`;
         const dayIndex = workout.id === "A" ? state.settings.dayA : workout.id === "B" ? state.settings.dayB : state.settings.dayC;
         const dayName = dayNames[Number(dayIndex)];
 
@@ -1264,6 +1643,7 @@
     }
 
     function renderCalendar() {
+      renderCalendarWorkoutTabs();
       const grid = document.getElementById("calendarGrid");
       const title = document.getElementById("calendarTitle");
       grid.innerHTML = "";
@@ -1285,9 +1665,10 @@
       for (let i = 0; i < 42; i++) {
         const d = addDays(start, i);
         const iso = dateToISO(d);
-        const day = document.createElement("button");
-        day.type = "button";
+        const day = document.createElement("div");
         day.className = "day";
+        day.setAttribute("role", "button");
+        day.setAttribute("tabindex", "0");
         if (d.getMonth() !== month) day.classList.add("out");
         if (iso === todayISO()) day.classList.add("today");
         if (iso === selectedDate) day.classList.add("selected");
@@ -1300,9 +1681,13 @@
           const activityCount = doneWorkout ? getActivityCompletion(log, doneWorkout) : null;
           const countLabel = activityCount ? ` ${activityCount.completed}/${activityCount.total}` : "";
           dot = `<span class="dot done">Done${countLabel}</span>`;
+          if (doneWorkout) {
+            dot += `<button class="day-plan-tab" type="button" data-day-plan="${doneWorkout.id}">Plan</button>`;
+          }
         } else if (wid) {
           const missed = iso < todayISO() ? " missed" : "";
           dot = `<span class="dot${missed ? " missed" : ""}">${defaultProgram[wid].title}</span>`;
+          dot += `<button class="day-plan-tab" type="button" data-day-plan="${wid}">Plan</button>`;
         }
 
         day.innerHTML = `<div class="num">${d.getDate()}</div>${dot}`;
@@ -1310,6 +1695,20 @@
           selectedDate = iso;
           renderCalendar();
         });
+        day.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectedDate = iso;
+            renderCalendar();
+          }
+        });
+        const planBtn = day.querySelector("[data-day-plan]");
+        if (planBtn) {
+          planBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            openWorkoutPlan(planBtn.getAttribute("data-day-plan"));
+          });
+        }
         grid.appendChild(day);
       }
 
@@ -1345,7 +1744,7 @@
         <p class="muted">Status: ${status}${activityText} • Cardio target: ${workout.cardio.minutes} minutes</p>
         <div class="btn-row">
           <button class="btn" id="logSelectedBtn" type="button">${log && log.completed ? "Edit Log" : "Log Workout"}</button>
-          <button class="btn secondary" id="viewSelectedPlanBtn" type="button">View Plan</button>
+          <button class="btn secondary" id="viewSelectedPlanBtn" type="button">Workout Plan</button>
         </div>
       `;
       document.getElementById("logSelectedBtn").addEventListener("click", () => {
@@ -1353,7 +1752,7 @@
         document.getElementById("logWorkoutType").value = workoutId;
         showTab("log");
       });
-      document.getElementById("viewSelectedPlanBtn").addEventListener("click", () => showTab("plan"));
+      document.getElementById("viewSelectedPlanBtn").addEventListener("click", () => openWorkoutPlan(workoutId));
     }
 
     function renderLogOptions() {
@@ -1657,7 +2056,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `strengthfit56-backup-${todayISO()}.json`;
+      a.download = `strengthfit-backup-${todayISO()}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -1684,6 +2083,16 @@
     }
 
     function setupEvents() {
+      const heroStart = document.getElementById("heroStartBtn");
+      if (heroStart) {
+        heroStart.addEventListener("click", () => {
+          const next = getNextPlannedDate();
+          document.getElementById("logDate").value = next ? next.iso : todayISO();
+          document.getElementById("logWorkoutType").value = next ? next.workoutId : "A";
+          showTab("log");
+        });
+      }
+
       document.getElementById("quickTodayBtn").addEventListener("click", () => {
         selectedDate = todayISO();
         viewMonth = new Date();
