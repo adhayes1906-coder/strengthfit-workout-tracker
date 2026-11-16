@@ -1062,7 +1062,9 @@
           <h2>Workout Plan</h2>
           <span class="pill blue">3 days / week</span>
         </div>
-        <p class="muted">Each workout is designed to stay under 45 minutes: warm-up, strength, core, cardio and stretching.</p>
+        <p class="muted">Revised plan: leg press once weekly, varied chest work, and direct biceps and triceps work every day. Train on nonconsecutive days. Each session: 5 min warm-up + 27 min strength and core + 8 min cardio + 5 min stretching.</p>
+        <div class="advice"><strong>How to progress:</strong> Leave about two controlled reps available. Rest 45–75 seconds between sets, longer if needed. Add one rep per set within the listed range; once every set reaches the top comfortably, use the smallest available weight increase. Stop the strength block at 27 minutes.</div>
+        <p class="muted">Alternatives replace an exercise; they are not extra exercises. Choose a variation in the Log tab and keep it for several weeks to track progress. Weights are tracked separately for each exercise. For dumbbells, enter the weight of one dumbbell consistently.</p>
         <div id="planList"></div>
       </div>
     </section>
@@ -1218,7 +1220,7 @@
     const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const shortDayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-    const defaultProgram = {
+    const legacyProgram = {
       A: {
         id: "A",
         title: "Workout A",
@@ -1277,17 +1279,82 @@
       }
     };
 
+    const defaultProgram = {
+      A: {
+        id: "A",
+        version: 2,
+        title: "Workout A",
+        subtitle: "Legs, Chest + Arms",
+        dayLabel: "Monday",
+        minutes: 45,
+        warmup: ["5 minutes total: easy walking or cycling, including a light practice set for the first leg and chest movements"],
+        stretch: ["5 minutes total: gentle chest, hip-flexor, calf and hamstring stretches; do not force the range"],
+        exercises: [
+          {"id": "leg_press", "name": "Leg Press", "sets": 2, "reps": 10, "maxReps": 12, "type": "lower", "note": "Keep your back supported and use a comfortable depth.", "alternatives": [{"id": "sit_to_stand", "name": "Sit-to-Stand", "note": "Use a stable bench; start without added weight.", "bodyweight": true}]},
+          {"id": "seated_leg_curl", "name": "Seated Hamstring Curl", "sets": 2, "reps": 10, "maxReps": 15, "type": "lower", "note": "Keep hips against the seat and curl without jerking.", "alternatives": [{"id": "lying_leg_curl", "name": "Lying Hamstring Curl", "note": "Keep hips against the pad; avoid arching your back."}]},
+          {"id": "chest_press", "name": "Machine Chest Press", "sets": 2, "reps": 8, "maxReps": 12, "type": "upper", "note": "Keep your back against the pad; press smoothly.", "alternatives": [{"id": "db_floor_press", "name": "Dumbbell Floor Press", "note": "Lower until upper arms gently meet the floor; keep wrists stacked."}, {"id": "elevated_pushup", "name": "Elevated Push-Up", "note": "Use a secure bar or bench; keep your body aligned.", "bodyweight": true}]},
+          {"id": "chest_supported_row", "name": "Chest-Supported Row", "sets": 2, "reps": 10, "maxReps": 12, "type": "upper", "note": "Keep your chest on the pad; avoid shrugging."},
+          {"id": "cable_biceps_curl", "name": "Cable Biceps Curl", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep elbows near your sides; do not lean back.", "alternatives": [{"id": "seated_db_curl", "name": "Seated Alternating Dumbbell Curl", "note": "Use back support; complete the listed reps on each arm.", "perSide": true}]},
+          {"id": "rope_pressdown", "name": "Rope Triceps Pressdown", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep elbows still and extend without swinging.", "alternatives": [{"id": "bar_pressdown", "name": "Straight-Bar Triceps Pressdown", "note": "Keep elbows beside your ribs; avoid leaning on the bar."}]},
+          {"id": "dead_bug", "name": "Dead Bug", "sets": 1, "reps": 6, "maxReps": 8, "type": "core", "note": "Move slowly; keep your trunk steady.", "perSide": true, "bodyweight": true}
+        ],
+        cardio: {"minutes": 8, "mode": "Brisk walking, cycling or elliptical", "note": "Comfortable, steady pace that allows conversation."}
+      },
+      B: {
+        id: "B",
+        version: 2,
+        title: "Workout B",
+        subtitle: "Single-Leg Strength + Incline Chest",
+        dayLabel: "Wednesday",
+        minutes: 45,
+        warmup: ["5 minutes total: easy walking or cycling, including a light practice set for the first leg and chest movements"],
+        stretch: ["5 minutes total: gentle chest, hip-flexor, calf and hamstring stretches; do not force the range"],
+        exercises: [
+          {"id": "low_stepup", "name": "Supported Low Step-Up", "sets": 2, "reps": 8, "maxReps": 8, "type": "lower", "note": "Hold a stable support; start with body weight and a low step.", "perSide": true, "bodyweight": true, "alternatives": [{"id": "supported_split_squat", "name": "Supported Split Squat", "note": "Hold a fixed support; use a shallow, comfortable range.", "perSide": true, "bodyweight": true}, {"id": "sit_to_stand", "name": "Sit-to-Stand", "note": "Use a stable bench; stand without momentum.", "perSide": false, "bodyweight": true}]},
+          {"id": "glute_bridge", "name": "Floor Glute Bridge", "sets": 2, "reps": 12, "maxReps": 15, "type": "lower", "note": "Squeeze glutes; stop before your lower back arches.", "bodyweight": true, "alternatives": [{"id": "hip_thrust_machine", "name": "Hip-Thrust Machine", "note": "Use a comfortable range and keep ribs down.", "bodyweight": false}]},
+          {"id": "incline_db_press", "name": "Incline Dumbbell Press", "sets": 2, "reps": 8, "maxReps": 12, "type": "upper", "note": "Use bench support and a comfortable shoulder range.", "alternatives": [{"id": "incline_machine_press", "name": "Incline Machine Press", "note": "Adjust the seat so handles align with the upper chest."}]},
+          {"id": "lat_pulldown", "name": "Neutral-Grip Lat Pulldown", "sets": 2, "reps": 10, "maxReps": 12, "type": "upper", "note": "Pull toward your upper chest without swinging."},
+          {"id": "hammer_curl", "name": "Seated Dumbbell Hammer Curl", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep palms facing inward; curl both arms together.", "alternatives": [{"id": "cable_hammer_curl", "name": "Cable Hammer Curl", "note": "Use a rope; keep elbows close to your sides."}]},
+          {"id": "bar_pressdown", "name": "Straight-Bar Triceps Pressdown", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep elbows at your sides and shoulders relaxed.", "alternatives": [{"id": "rope_pressdown", "name": "Rope Triceps Pressdown", "note": "Keep elbows still; avoid swinging."}]},
+          {"id": "pallof_press", "name": "Pallof Press", "sets": 1, "reps": 8, "maxReps": 8, "type": "core", "note": "Resist rotation; keep hips and shoulders facing forward.", "perSide": true}
+        ],
+        cardio: {"minutes": 8, "mode": "Brisk walking, cycling or elliptical", "note": "Comfortable, steady pace that allows conversation."}
+      },
+      C: {
+        id: "C",
+        version: 2,
+        title: "Workout C",
+        subtitle: "Squat Pattern, Chest + Arms",
+        dayLabel: "Friday",
+        minutes: 45,
+        warmup: ["5 minutes total: easy walking or cycling, including a light practice set for the first leg and chest movements"],
+        stretch: ["5 minutes total: gentle chest, hip-flexor, calf and hamstring stretches; do not force the range"],
+        exercises: [
+          {"id": "supported_bench_squat", "name": "Supported Squat to a Bench", "sets": 2, "reps": 8, "maxReps": 12, "type": "lower", "note": "Hold a stable support and sit back with control; start with body weight.", "bodyweight": true, "alternatives": [{"id": "sit_to_stand", "name": "Sit-to-Stand", "note": "Use a stable bench and a comfortable height.", "bodyweight": true}, {"id": "supported_split_squat", "name": "Supported Split Squat", "note": "Hold a fixed support; use a comfortable range.", "perSide": true, "bodyweight": true}]},
+          {"id": "leg_extension", "name": "Leg Extension", "sets": 2, "reps": 10, "maxReps": 15, "type": "lower", "note": "Align the machine with your knees; extend smoothly."},
+          {"id": "flat_db_press", "name": "Flat Dumbbell Bench Press", "sets": 2, "reps": 8, "maxReps": 12, "type": "upper", "note": "Keep feet supported and lower the weights with control.", "alternatives": [{"id": "db_floor_press", "name": "Dumbbell Floor Press", "note": "Lower until upper arms gently meet the floor."}, {"id": "elevated_pushup", "name": "Elevated Push-Up", "note": "Use a secure bar or bench; keep your body aligned.", "bodyweight": true}]},
+          {"id": "seated_row", "name": "Seated Cable Row", "sets": 2, "reps": 10, "maxReps": 12, "type": "upper", "note": "Keep your trunk still; pull without jerking."},
+          {"id": "preacher_curl", "name": "Preacher-Curl Machine", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep upper arms supported; do not force elbow extension.", "alternatives": [{"id": "cable_biceps_curl", "name": "Cable Biceps Curl", "note": "Keep elbows near your sides; do not lean back."}]},
+          {"id": "single_arm_pressdown", "name": "Single-Arm Cable Triceps Pressdown", "sets": 2, "reps": 10, "maxReps": 15, "type": "upper", "note": "Keep your upper arm still; complete both sides.", "perSide": true, "alternatives": [{"id": "rope_pressdown", "name": "Rope Triceps Pressdown", "note": "Keep elbows still; press with both arms.", "perSide": false}]},
+          {"id": "bird_dog", "name": "Bird Dog", "sets": 1, "reps": 6, "maxReps": 6, "type": "core", "note": "Reach without twisting or arching your back.", "perSide": true, "bodyweight": true}
+        ],
+        cardio: {"minutes": 8, "mode": "Brisk walking, cycling or elliptical", "note": "Comfortable, steady pace that allows conversation."}
+      }
+    };
+
     const defaultSettings = {
       dayA: 1,
       dayB: 3,
       dayC: 5,
       startDate: todayISO(),
-      upperIncrement: 5,
-      lowerIncrement: 10,
+      upperIncrement: 2.5,
+      lowerIncrement: 5,
       cardioGoal: 90
     };
 
     let state = loadState();
+    let logDraft = null;
+    let currentLogWorkout = null;
     let viewMonth = new Date();
     viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
     let selectedDate = todayISO();
@@ -1370,13 +1437,41 @@
       return null;
     }
 
+    // Saved sessions retain the prescription and exercise choices used at the time.
+    function getWorkoutForLog(log) {
+      if (!log) return null;
+      return log.workoutSnapshot || (log.programVersion === 2 ? defaultProgram : legacyProgram)[log.workoutId];
+    }
+
+    function exerciseOptions(exercise) {
+      return [exercise, ...(exercise.alternatives || []).map(option => Object.assign({}, exercise, { perSide: false, bodyweight: false }, option))];
+    }
+
+    function prescription(exercise) {
+      const range = exercise.maxReps && exercise.maxReps !== exercise.reps ? `${exercise.reps}–${exercise.maxReps}` : exercise.reps;
+      return `${exercise.sets} sets × ${range} ${exercise.id === "farmer_carry" ? "seconds" : "reps"}${exercise.perSide ? " per side" : ""}`;
+    }
+
+    function totalTarget(exercise, maximum = false) {
+      return exercise.sets * (maximum ? (exercise.maxReps || exercise.reps) : exercise.reps) * (exercise.perSide ? 2 : 1);
+    }
+
+    function alternativesText(exercise) {
+      return exercise.alternatives?.length ? ` Alternative: ${exercise.alternatives.map(option => option.name).join(" / ")}.` : "";
+    }
+
     function allExercises() {
       const map = {};
       Object.values(defaultProgram).forEach(workout => {
+        workout.exercises.flatMap(exerciseOptions).forEach(ex => {
+          if (!map[ex.id]) map[ex.id] = Object.assign({}, ex, { workout: workout.title });
+        });
+      });
+      Object.values(state.logs).forEach(log => {
+        const workout = getWorkoutForLog(log);
+        if (!workout) return;
         workout.exercises.forEach(ex => {
-          if (!map[ex.id]) {
-            map[ex.id] = Object.assign({}, ex, { workout: workout.title });
-          }
+          if (log.exercises?.[ex.id] && !map[ex.id]) map[ex.id] = Object.assign({}, ex, { workout: "Previous plan" });
         });
       });
       return map;
@@ -1404,6 +1499,7 @@
     function exerciseAdvice(exercise) {
       const last = getLastExerciseEntry(exercise.id);
       if (!last) {
+        if (exercise.bodyweight) return { lastWeight: "—", suggested: "Bodyweight", note: "Start without added weight and focus on control." };
         return { lastWeight: "—", suggested: "Start light", note: "Enter a comfortable starting weight." };
       }
 
@@ -1412,10 +1508,14 @@
       const repsDone = Number(item.reps || 0);
       const rpe = Number(item.rpe || 0);
       const pain = Number(item.pain || 0);
-      const targetTotal = Number(exercise.sets) * Number(exercise.reps);
+      const targetTotal = totalTarget(exercise, true);
       const increment = exercise.type === "lower" ? Number(state.settings.lowerIncrement) : Number(state.settings.upperIncrement);
 
-      if (exercise.type === "core") {
+      if (pain > 0) {
+        return { lastWeight: weight ? `${weight} lb` : "Bodyweight", suggested: "Adjust exercise", note: "Do not increase load after pain. Stop the painful movement and use a comfortable alternative; seek assessment for persistent or radiating symptoms." };
+      }
+
+      if (exercise.type === "core" || exercise.bodyweight) {
         return {
           lastWeight: weight ? `${weight} lb` : "Bodyweight",
           suggested: weight ? `${weight} lb` : "Bodyweight",
@@ -1423,34 +1523,23 @@
         };
       }
 
-      if (pain >= 4) {
-        return {
-          lastWeight: `${weight} lb`,
-          suggested: `${Math.max(0, weight - increment)}–${weight} lb`,
-          note: "Pain was elevated. Reduce load or repeat with easier range."
-        };
+      const previousExercise = getWorkoutForLog(last.log)?.exercises.find(ex => ex.id === exercise.id);
+      if (previousExercise && (previousExercise.sets !== exercise.sets || !!previousExercise.perSide !== !!exercise.perSide)) {
+        return { lastWeight: `${weight} lb`, suggested: `${weight} lb`, note: "The prescription changed. Establish controlled sets at this weight before increasing." };
       }
 
-      if (repsDone >= targetTotal && rpe > 0 && rpe <= 7) {
+      if (repsDone >= targetTotal && rpe > 0 && rpe <= 8) {
         return {
           lastWeight: `${weight} lb`,
           suggested: `${weight + increment} lb`,
-          note: `Good form target met. Increase by ${increment} lb next time.`
-        };
-      }
-
-      if (repsDone >= targetTotal && (!rpe || rpe <= 8)) {
-        return {
-          lastWeight: `${weight} lb`,
-          suggested: `${weight + increment} lb`,
-          note: `Target reps met. Increase only if form felt strong and back felt good.`
+          note: `Top of rep range reached. Use the smallest available increase (your setting: ${increment} lb) only if every set stayed controlled.`
         };
       }
 
       return {
         lastWeight: `${weight} lb`,
         suggested: `${weight} lb`,
-        note: "Repeat this weight until all target reps are completed with good form."
+        note: "Repeat this weight and add reps within the range. Increase only after every set reaches the top with controlled form and about two reps available."
       };
     }
 
@@ -1603,7 +1692,7 @@
           </div>
         `;
         const logButton = div.querySelector("[data-logdate]");
-        logButton.classList.add(statusClass === "good" ? "pill-good" : "");
+        if (statusClass === "good") logButton.classList.add("pill-good");
         logButton.addEventListener("click", () => {
           document.getElementById("logDate").value = iso;
           document.getElementById("logWorkoutType").value = wid;
@@ -1673,7 +1762,7 @@
               <div class="exercise">
                 <div>
                   <strong>${ex.name}</strong>
-                  <small>${ex.sets} sets x ${ex.reps}${ex.id === "farmer_carry" ? " seconds" : " reps"} • ${ex.note}</small>
+                  <small>${prescription(ex)} • ${ex.note}${alternativesText(ex)}</small>
                 </div>
                 <span class="pill">${ex.type}</span>
               </div>
@@ -1776,7 +1865,7 @@
               <div class="exercise">
                 <div>
                   <strong>${ex.name}</strong>
-                  <small>${ex.sets} sets x ${ex.reps}${ex.id === "farmer_carry" ? " seconds" : " reps"} • ${ex.note}</small>
+                  <small>${prescription(ex)} • ${ex.note}${alternativesText(ex)}</small>
                 </div>
                 <span class="pill">${ex.type}</span>
               </div>
@@ -1980,7 +2069,7 @@
         const suggestedNumber = Number(String(advice.suggested).replace(/[^0-9.]/g, ""));
         obj[ex.id] = {
           weight: ex.type === "core" ? "" : (Number.isFinite(suggestedNumber) && suggestedNumber > 0 ? suggestedNumber : ""),
-          reps: ex.sets * ex.reps,
+          reps: totalTarget(ex),
           rpe: 7,
           pain: 0
         };
@@ -1997,7 +2086,7 @@
       const items = [];
       items.push({ key: makeActivityKey("warmup", "main"), label: "Warm-up", detail: workout.warmup.join(" • ") });
       workout.exercises.forEach(ex => {
-        items.push({ key: makeActivityKey("exercise", ex.id), label: ex.name, detail: `${ex.sets} x ${ex.reps}${ex.id === "farmer_carry" ? " seconds" : " reps"}` });
+        items.push({ key: makeActivityKey("exercise", ex.id), label: ex.name, detail: `${prescription(ex)}` });
       });
       items.push({ key: makeActivityKey("cardio", "main"), label: "Cardio", detail: `${workout.cardio.minutes} minutes — ${workout.cardio.mode}` });
       items.push({ key: makeActivityKey("stretch", "main"), label: "Stretching / Flexibility", detail: workout.stretch.join(" • ") });
@@ -2005,7 +2094,7 @@
     }
 
     function getActivityCompletion(log, workout) {
-      const activities = getWorkoutActivities(workout);
+      const activities = getWorkoutActivities(getWorkoutForLog(log) || workout);
       const saved = (log && log.activities) || {};
       const completed = activities.filter(item => saved[item.key]).length;
       return { completed, total: activities.length, activities };
@@ -2015,8 +2104,10 @@
       renderLogOptions();
       const date = document.getElementById("logDate").value || todayISO();
       const wid = document.getElementById("logWorkoutType").value || getPlannedWorkoutForDate(date) || "A";
-      const workout = defaultProgram[wid];
-      const existing = state.logs[date] && state.logs[date].workoutId === wid ? state.logs[date] : null;
+      if (logDraft && (logDraft.date !== date || logDraft.workoutId !== wid)) logDraft = null;
+      const existing = logDraft || (state.logs[date] && state.logs[date].workoutId === wid ? state.logs[date] : null);
+      const workout = getWorkoutForLog(existing) || defaultProgram[wid];
+      currentLogWorkout = workout;
       const exercisesLog = existing ? existing.exercises : createDefaultExerciseLog(workout);
       const activityItems = getWorkoutActivities(workout);
       const savedActivities = existing && existing.activities ? existing.activities : {};
@@ -2025,7 +2116,7 @@
       wrap.innerHTML = `
         <div class="advice">
           <strong>${workout.title}: ${workout.subtitle}</strong><br>
-          ${workout.cardio.minutes} min cardio target • Keep total workout under 45 minutes.
+          ${workout.cardio.minutes} min cardio target • ${workout.version === 2 ? "5 min warm-up · 27 min strength · 8 min cardio · 5 min stretch" : "Original saved workout"} • 45 minutes max.
         </div>
         <h3 style="margin-top:1rem">Activity Checklist</h3>
         <p class="muted">Check off each activity as you complete it. The calendar will show your completed activity count.</p>
@@ -2048,18 +2139,21 @@
           </div>
         </div>
         <label for="workoutNotes">Notes</label>
-        <textarea id="workoutNotes" placeholder="Example: Back felt good. Bike 10 min. Increase leg press next time.">${existing ? escapeHTML(existing.notes || "") : ""}</textarea>
+        <textarea id="workoutNotes" placeholder="Example: All sets controlled. Bike 8 min. Repeat weights and add a rep next time.">${existing ? escapeHTML(existing.notes || "") : ""}</textarea>
         <h3 style="margin-top:1rem">Exercises</h3>
-        ${workout.exercises.map(ex => {
-          const item = exercisesLog[ex.id] || { weight: "", reps: ex.sets * ex.reps, rpe: 7, pain: 0 };
+        ${workout.exercises.map((ex, index) => {
+          const slot = workout.version === 2 ? defaultProgram[wid].exercises[index] : null;
+          const options = slot ? exerciseOptions(slot) : [];
+          const item = exercisesLog[ex.id] || { weight: "", reps: totalTarget(ex), rpe: 7, pain: 0 };
           const advice = exerciseAdvice(ex);
           return `
             <div class="log-exercise" data-exid="${ex.id}">
               <h4>${ex.name}</h4>
-              <p class="muted">${ex.sets} x ${ex.reps}${ex.id === "farmer_carry" ? " seconds" : " reps"} • ${ex.note}</p>
+              ${options.length > 1 ? `<label for="exercise-choice-${index}">Exercise option</label><select id="exercise-choice-${index}" data-exercise-slot="${index}">${options.map(option => `<option value="${option.id}" ${option.id === ex.id ? "selected" : ""}>${option.name}</option>`).join("")}</select>` : ""}
+              <p class="muted">${prescription(ex)} • ${ex.note}</p>
               <div class="grid-2">
                 <div class="advice"><strong>Last:</strong> ${advice.lastWeight}<br><strong>Next suggestion:</strong> ${advice.suggested}<br>${advice.note}</div>
-                <div class="warning"><strong>Back check:</strong> Keep pain 0–3/10. If pain is 4+, lower weight or change exercise.</div>
+                <div class="warning"><strong>Back check:</strong> Use a comfortable range. Stop a movement that causes pain; seek assessment for persistent or radiating symptoms.</div>
               </div>
               <div class="log-grid">
                 <div>
@@ -2067,8 +2161,8 @@
                   <input data-field="weight" type="number" min="0" step="0.5" value="${item.weight ?? ""}" placeholder="${ex.type === "core" ? "Bodyweight" : "lb"}" />
                 </div>
                 <div>
-                  <label>Total Reps / Seconds</label>
-                  <input data-field="reps" type="number" min="0" step="1" value="${item.reps ?? ex.sets * ex.reps}" />
+                  <label>Total Reps / Seconds${ex.perSide ? " (both sides combined)" : ""}</label>
+                  <input data-field="reps" type="number" min="0" step="1" value="${item.reps ?? totalTarget(ex)}" />
                 </div>
                 <div>
                   <label>Effort 1–10</label>
@@ -2089,6 +2183,24 @@
           Mark workout completed
         </label>
       `;
+
+      wrap.querySelectorAll("[data-exercise-slot]").forEach(select => {
+        select.addEventListener("change", () => {
+          const draft = collectLogForm();
+          const index = Number(select.getAttribute("data-exercise-slot"));
+          const slot = defaultProgram[wid].exercises[index];
+          const chosen = exerciseOptions(slot).find(option => option.id === select.value);
+          if (!chosen) return;
+          const old = draft.workoutSnapshot.exercises[index];
+          draft.workoutSnapshot.exercises[index] = JSON.parse(JSON.stringify(chosen));
+          delete draft.exercises[old.id];
+          delete draft.activities[makeActivityKey("exercise", old.id)];
+          Object.assign(draft.exercises, createDefaultExerciseLog({ exercises: [chosen] }));
+          draft.activities[makeActivityKey("exercise", chosen.id)] = false;
+          logDraft = draft;
+          renderLogForm();
+        });
+      });
 
       document.querySelectorAll("[data-activity-sync]").forEach(syncBox => {
         syncBox.addEventListener("change", () => {
@@ -2119,7 +2231,7 @@
     function collectLogForm() {
       const date = document.getElementById("logDate").value;
       const wid = document.getElementById("logWorkoutType").value;
-      const workout = defaultProgram[wid];
+      const workout = currentLogWorkout || defaultProgram[wid];
       const exercises = {};
 
       document.querySelectorAll(".log-exercise").forEach(block => {
@@ -2146,6 +2258,8 @@
         date,
         workoutId: wid,
         title: workout.title,
+        programVersion: workout.version || 1,
+        workoutSnapshot: JSON.parse(JSON.stringify(workout)),
         completed: document.getElementById("completedCheck").checked || allActivitiesDone,
         activities,
         cardioMinutes: Number(document.getElementById("cardioMinutes").value || 0),
@@ -2163,6 +2277,7 @@
         return;
       }
       state.logs[log.date] = log;
+      logDraft = null;
       saveState();
       selectedDate = log.date;
       alert("Workout saved.");
@@ -2176,7 +2291,7 @@
         const last = getLastExerciseEntry(ex.id);
         return `
           <tr>
-            <td><strong>${ex.name}</strong><br><span class="muted">${ex.workout} • ${ex.sets} x ${ex.reps}</span></td>
+            <td><strong>${ex.name}</strong><br><span class="muted">${ex.workout} • ${prescription(ex)}</span></td>
             <td>${advice.lastWeight}<br><span class="muted">${last ? formatDate(last.date) : "No log yet"}</span></td>
             <td><strong>${advice.suggested}</strong><br><span class="muted">${advice.note}</span></td>
           </tr>
@@ -2279,6 +2394,7 @@
             settings: Object.assign({}, defaultSettings, data.settings || {}),
             logs: data.logs || {}
           };
+          logDraft = null;
           saveState();
           alert("Data imported.");
         } catch (err) {
@@ -2368,6 +2484,7 @@
         }
         if (confirm("Delete the workout log for this date?")) {
           delete state.logs[date];
+          logDraft = null;
           saveState();
           alert("Workout log deleted.");
         }
@@ -2385,6 +2502,7 @@
         if (confirm("Reset all workout logs and settings? This cannot be undone unless you exported a backup.")) {
           localStorage.removeItem(APP_KEY);
           state = loadState();
+          logDraft = null;
           selectedDate = todayISO();
           viewMonth = new Date();
           renderAll();
@@ -2399,3 +2517,4 @@
   </script>
 </body>
 </html>
+
