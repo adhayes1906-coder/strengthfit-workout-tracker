@@ -1039,7 +1039,7 @@
           <div class="exercise">
             <div>
               <strong>Increase gradually</strong>
-              <small>Add weight only when you complete the target reps with good form and pain stays low.</small>
+              <small>Add weight only when every set reaches the top of its rep range with controlled form and no pain.</small>
             </div>
             <span class="pill blue">Smart progression</span>
           </div>
@@ -1114,7 +1114,7 @@
           <button class="btn secondary" id="loadPlannedBtn" type="button">Use Planned Workout</button>
           <button class="btn danger" id="deleteLogBtn" type="button">Delete This Date</button>
         </div>
-        <p class="footer-note">Progression rule: if you hit the target reps with good form, pain is 0–3/10 and effort is not too high, the app suggests a small increase next time.</p>
+        <p class="footer-note">Progression rule: reach the top of the rep range on every set with controlled form, no pain, and about two reps available before considering the smallest weight increase.</p>
       </div>
     </section>
 
@@ -1449,7 +1449,7 @@
 
     function prescription(exercise) {
       const range = exercise.maxReps && exercise.maxReps !== exercise.reps ? `${exercise.reps}–${exercise.maxReps}` : exercise.reps;
-      return `${exercise.sets} sets × ${range} ${exercise.id === "farmer_carry" ? "seconds" : "reps"}${exercise.perSide ? " per side" : ""}`;
+      return `${exercise.sets} ${exercise.sets === 1 ? "set" : "sets"} × ${range} ${exercise.id === "farmer_carry" ? "seconds" : "reps"}${exercise.perSide ? " per side" : ""}`;
     }
 
     function totalTarget(exercise, maximum = false) {
